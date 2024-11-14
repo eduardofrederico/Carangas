@@ -7,3 +7,23 @@
 //
 
 import Foundation
+
+class Car: Codable {
+    
+    var _id: String
+    var brand: String
+    var gasType: Int
+    var name: String
+    var price: Double
+    
+    var gas: String {
+        switch gasType {
+        case 0: 
+            return "Flex Fuel"
+        case 1:
+            return "Etanol"
+        default: 
+            return "Gasolina"
+        }
+    }
+}
