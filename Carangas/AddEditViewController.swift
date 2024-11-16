@@ -24,6 +24,13 @@ class AddEditViewController: UIViewController {
     // MARK: - Super Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        if car != nil {
+            tfBrand.text = car.brand
+            tfName.text = car.name
+            tfPrice.text = "\(car.price)"
+            scGasType.selectedSegmentIndex = car.gasType
+            btAddEdit.setTitle("Alterar Carro", for: .normal)
+        }
     }
     
     // MARK: - IBActions
@@ -36,6 +43,16 @@ class AddEditViewController: UIViewController {
         if tfPrice.text!.isEmpty { tfPrice.text = "0"}
         car.price = Double(tfPrice.text!)!
         car.gasType = scGasType.selectedSegmentIndex
+        
+        if car._id == nil {
+            REST.save(car: car) {(success) in
+                self.goBack()
+            }
+        } else {
+            REST.update(car: car, onComplete: { (success) in
+                self.goBack()
+            })
+        }
         
         REST.save(car: car) { (success) in
             self.goBack()

@@ -17,6 +17,12 @@ enum CarsError: Error {
     case invalidJSON
 }
 
+enum RESTOperation {
+    case save
+    case update
+    case delete
+}
+
 class REST {
     
     
@@ -74,13 +80,40 @@ class REST {
     }
     
     class func save(car: Car, onComplete: @escaping (Bool) -> Void) {
-        guard let url = URL(string: basePath) else {
+        applyOperation(car: <#T##Car#>, operation: .save, onComplete: onComplete)
+    }
+    
+    class func update(car: Car, onComplete: @escaping (Bool) -> Void) {
+        applyOperation(car: <#T##Car#>, operation: .update, onComplete: onComplete)
+    }
+    
+    class func delete(car: Car, onComplete: @escaping (Bool) -> Void) {
+        applyOperation(car: <#T##Car#>, operation: .delete, onComplete: onComplete)
+    }
+    
+    
+    private class func applyOperation(car: Car, operation: RESTOperation, onComplete: @escaping (Bool) -> Void) {
+        
+        let urlString = basePath + "/" + (car._id! ?? "")
+        
+        guard let url = URL(string: urlString) else {
             onComplete(false)
             return
         }
         
+        var httpMethod: String = ""
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        
+        switch operation {
+            case .save:
+                httpMethod = "POST"
+            case .update:
+                httpMethod = "PUT"
+            case .delete:
+                httpMethod = "DELETE"
+        }
+        
+        request.httpMethod = httpMethod
         guard let json = try? JSONEncoder().encode(car) else {
             onComplete(false)
             return
